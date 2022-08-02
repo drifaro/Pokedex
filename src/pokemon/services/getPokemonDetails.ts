@@ -7,5 +7,7 @@ export async function getPokemonDetails(name: string): Promise<PokemonDetail>{
 
   const response = await axios.get<PokemonDetail>(endpoint);
 
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  
   return response.data;
 }
