@@ -9,21 +9,24 @@ export interface PokemonListInterface {
 
 interface ListPokemonInterface {
   count: number;
-  next: null | string;
-  previous: null | string;
+  next: null | string | undefined ;
+  previous: null | string | undefined;
   results: PokemonDetail[];
 }
 
-export async function listPokemons(): Promise<ListPokemonInterface>{
-  const endpoint = `${process.env.REACT_APP_POKEAPI}/pokemon`;
+export async function listPokemons(page = 1): Promise<ListPokemonInterface>{
+
+  const offset = (page - 1) * 12;
+
+  let endpoint = `${process.env.REACT_APP_POKEAPI}/pokemon?limit=12&offset=${offset}`;
 
   const response = await axios.get<ListPokemonInterface>(endpoint);
 
   const promiseArr = response.data.results.map(({name})=> getPokemonDetails(name));
+
   const resultsPromise = await Promise.all(promiseArr);
 
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  
+  console.log(page);
   return {
     ...response.data,
     results: resultsPromise
