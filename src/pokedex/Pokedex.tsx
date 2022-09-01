@@ -11,6 +11,8 @@ import {
   IconButton,
   Badge,
   Stack,
+  Paper,
+  InputBase,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import CachedIcon from "@mui/icons-material/Cached";
@@ -23,24 +25,24 @@ import Pagination from "@mui/material/Pagination";
 import PaginationItem from "@mui/material/PaginationItem";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import SearchIcon from "@mui/icons-material/Search";
 
 interface PokedexProps {}
 
 export const Pokedex: React.FC<PokedexProps> = () => {
   const [page, setPage] = useState(1);
+  const [searchText, setSearchText] = useState('');
   const { favorites } = useContext(FavoriteContext);
   const navigate = useNavigate();
   const { data, isLoading, isRefetching, refetch, isStale } = useQuery(
     ["listPokemon", page],
     () => listPokemons(page),
     { keepPreviousData: true }
-    );
-    const dataCount = data?.count || 0;
-    const pageCount = Math.ceil(dataCount/12);
- 
+  );
+  const dataCount = data?.count || 0;
+  const pageCount = Math.ceil(dataCount / 12);
   const favoritesCount = favorites.length;
 
-  
   function handleFavorite() {
     navigate("/favoritos");
   }
@@ -54,6 +56,18 @@ export const Pokedex: React.FC<PokedexProps> = () => {
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Pokedex
               </Typography>
+
+              {isStale && (
+                <IconButton
+                  aria-label="refetch"
+                  disabled={isRefetching}
+                  onClick={() => refetch()}
+                  color="inherit"
+                >
+                  <CachedIcon />
+                </IconButton>
+              )}
+
               <IconButton
                 size="large"
                 aria-label="show more"
@@ -73,18 +87,29 @@ export const Pokedex: React.FC<PokedexProps> = () => {
       </Box>
 
       <Container maxWidth="lg">
-        <Box style={{ marginTop: `1em` }}>
-          {isStale && (
-            <IconButton
-              aria-label="refetch"
-              disabled={isRefetching}
-              onClick={() => refetch()}
-              color="secondary"
-            >
-              <CachedIcon />
-            </IconButton>
-          )}
-        </Box>
+        <Paper
+          component="form"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            width: 400,
+            borderRadius: "100px",
+          }}
+        >
+          <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+            <SearchIcon />
+          </IconButton>
+          <InputBase
+            sx={{ ml: 1, flex: 1 }}
+            placeholder="Pesquisar"
+            value={searchText}
+            onChange={(event) => {
+              setSearchText(event.target.value)
+              setData(data?.results.filter((item) => item.name === event.target.value))
+            }}
+          />
+        </Paper>
+
         {!isLoading ? (
           <Box
             mt={2}
@@ -107,7 +132,7 @@ export const Pokedex: React.FC<PokedexProps> = () => {
                 alignSelf: `flex-end`,
               }}
             >
-              <Pagination 
+              <Pagination
                 color="primary"
                 count={pageCount}
                 onChange={(_e, currentPage) => setPage(currentPage)}

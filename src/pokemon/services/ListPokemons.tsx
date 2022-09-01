@@ -1,3 +1,4 @@
+import { QueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { PokemonDetail } from "../interface/pokemonDetail";
 import { getPokemonDetails } from "./getPokemonDetails";
@@ -26,7 +27,6 @@ export async function listPokemons(page = 1): Promise<ListPokemonInterface>{
 
   const resultsPromise = await Promise.all(promiseArr);
 
-  console.log(page);
   return {
     ...response.data,
     results: resultsPromise

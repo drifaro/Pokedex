@@ -6,8 +6,6 @@ import Chip from '@mui/material/Chip/Chip';
 import { FavoriteContext } from '../../favorites/context/FavoriteContext';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
-
-
 interface PokedexCardProps {
   pokemon: PokemonDetail;
 }
@@ -54,7 +52,7 @@ export const PokedexCard: React.FC<PokedexCardProps> = ({ pokemon }) => {
             <IconButton onClick={() => isFavorite ? removePokemonFromFavorites() : addPokemonToFavorite()}  aria-label="add to favorites" >
               <FavoriteIcon color={isFavorite ? `error` : `inherit` } />
             </IconButton>
-          </CardActions>
+          </CardActions> 
         </Box>
 
         <CardMedia component="img"
